@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TakshakMasters Interactive MBA</title>
+    <style>
+        /* --- General Animations and Base Styling --- */
+        
+        /* Original animation for "Future Business Leaders" (Gold, Blue, Green) */
+        @keyframes dynamicColorFuture {
+            0% { color: #ffc107; } /* Gold */
+            33% { color: #007bff; } /* Blue */
+            66% { color: #28a745; } /* Green */
+            100% { color: #ffc107; }
+        }
+
+        /* New animation for "Takshak Business Leaders" (Blue, Teal, Orange) */
+        @keyframes dynamicColorTakshak {
+            0% { color: #007bff; } /* Blue */
+            33% { color: #17a2b8; } /* Teal */
+            66% { color: #dc3545; } /* Red/Orange */
+            100% { color: #007bff; }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            color: #333;
+            transition: background-color 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        /* --- Page Containers --- */
+        .page {
+            display: none; 
+            min-height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        /* --- Homepage Styling --- */
+        #home-page {
+            display: flex;
+            /* Base color */
+            background-color: #193f77; 
+            flex-direction: column;
+            position: relative;
+            
+            /* --- BASE64 BACKGROUND ADDITION --- */
+            /* IMPORTANT: Replace the data string below (after base64,) 
+               with the actual Base64 CSS background data you generated. 
+            */
+            background-image: url("data:image/png;base64,iMORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAACzXTVzAAAAJklEQVQImWOUlpb+MDAwgxMDBnAAhIeHBXFzcwIHBxflg0hO3gQDAIeA7mC6+88tAAAAAElFTkSuQmCC");
+            background-repeat: repeat;
+            /* --- END BASE64 BACKGROUND ADDITION --- */
+        }
+        
+        /* --- Background Video Styling (for seamless full-screen loop) --- */
+        #background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the video covers the entire container */
+            z-index: 1; /* Keep it behind the main content */
+            opacity: 0.3; /* Subtle transparency */
+        }
+
+        /* --- LOGO STYLING (REMOVED) --- */
+        #main-greeting-container {
+            display: flex;
+            flex-direction: column; /* Stack elements */
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        /* #header-logo styles removed */
+        
+        #main-greeting {
+            font-size: 4em;
+            color: white;
+            cursor: pointer;
+            font-weight: 800;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            transition: color 0.3s, transform 0.3s;
+            /* Apply new distinct dynamic color animation */
+            animation: dynamicColorTakshak 5s infinite alternate; /* 5s speed, slightly slower than the other */
+        }
+        #main-greeting:hover {
+            color: #ffc107;
+            transform: scale(1.05);
+        }
+
+        .home-business-heads {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2); 
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        /* Apply the original dynamic color animation to the Future Business Leaders text */
+        #future-leaders-text {
+            font-size: 1.8em;
+            font-weight: bold;
+            animation: dynamicColorFuture 4s infinite alternate;
+            margin-bottom: 15px;
+        }
+
+        .head-profiles {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .head-profile {
+            background-color: #007bff;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- Navigation Page Styling (Intermediate Menu) --- */
+        #navigation-page {
+            background-color: #f4f7f9;
+            position: relative;
+        }
+
+        .business-interaction-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background-color: #e9ecef;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(0,123,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,193,7,0.1) 0%, transparent 50%);
+            animation: interactionPulse 10s infinite alternate;
+        }
+
+        @keyframes interactionPulse {
+            0% { background-size: 100% 100%, 100% 100%; opacity: 0.8; }
+            50% { background-size: 120% 120%, 80% 80%; opacity: 1; }
+            100% { background-size: 100% 100%, 100% 100%; opacity: 0.8; }
+        }
+
+        .business-interaction-bg::before,
+        .business-interaction-bg::after {
+            content: '';
+            position: absolute;
+            background-color: rgba(25, 63, 119, 0.05);
+            border-radius: 50%;
+            animation: moveAndFade 15s infinite linear;
+        }
+
+        @keyframes moveAndFade {
+            0% { transform: translate(0, 0) scale(0.8); opacity: 0.7; }
+            25% { transform: translate(20px, -20px) scale(1); opacity: 0.9; }
+            50% { transform: translate(0, 0) scale(1.2); opacity: 0.7; }
+            75% { transform: translate(-20px, 20px) scale(1); opacity: 0.9; }
+            100% { transform: translate(0, 0) scale(0.8); opacity: 0.7; }
+        }
+
+        /* --- SIDE PANEL STYLES --- */
+        .nav-buttons-container {
+            position: fixed; 
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 50;
+            width: 30px; 
+            height: auto; /* Changed to auto to accommodate multiple buttons */
+            background: #193f77; 
+            border-radius: 5px 0 0 5px;
+            transition: width 0.3s ease-out; 
+            overflow: hidden;
+            box-shadow: -3px 0 10px rgba(0, 0, 0, 0.3);
+            display: flex; /* Kept flex for vertical stacking, controlled by JS visibility */
+            flex-direction: column; /* Stack buttons vertically */
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        /* Expand the panel on hover */
+        .nav-buttons-container:hover {
+            width: 250px; /* Wider to accommodate the new longer tab text */
+        }
+        
+        /* Nav Button as Text (No Shape) */
+        .nav-button {
+            background: none; 
+            border: none;
+            color: white; 
+            padding: 15px 10px; 
+            font-size: 1.1em; /* Slightly smaller font for the longer text */
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: left;
+            white-space: nowrap; 
+            transition: color 0.2s;
+            transform: translateX(30px); 
+            transition: transform 0.3s ease-out;
+        }
+
+        /* Reveal the text inside the tab on container hover */
+        .nav-buttons-container:hover .nav-button {
+            transform: translateX(0); 
+        }
+
+        /* Hover effect on the text itself */
+        .nav-button:hover {
+            color: #ffc107; 
+        }
+        /* --- END SIDE PANEL STYLES --- */
+
+
+        /* --- Page Styling (General) --- */
+        #mba-page, #ai-page, #genai-page, #aimldl-page, #rbai-page {
+            padding: 0; 
+            position: relative;
+            background-color: #f8f9fa;
+            overflow: hidden; 
+        }
+        
+        /* Ensure content is above the video */
+        .mba-content-area {
+            margin: 0 auto; 
+            max-width: 800px;
+            width: 100%;
+            /* Make content background slightly transparent to see the video */
+            background-color: rgba(255, 255, 255, 0.9); 
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative; /* Set context for absolute positioning of the reset button */
+            z-index: 10; 
+        }
+
+        /* --- Updated Reset Button Style: Top right of the frame, transparent --- */
+        .reset-button {
+            position: absolute;
+            /* Position relative to the parent .mba-content-area (the white frame) */
+            top: 10px; 
+            right: 10px;
+            
+            z-index: 20;
+            cursor: pointer;
+            /* Requested: Transparent background and no shadow */
+            background-color: transparent; 
+            color: #193f77; /* Dark blue eye icon */
+            width: 30px; 
+            height: 30px; 
+            border-radius: 50%; 
+            box-shadow: none; /* Remove box shadow */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s, transform 0.2s;
+            font-size: 1.2em; 
+        }
+        .reset-button:hover {
+            background-color: transparent;
+            color: #007bff; /* Blue on hover for subtle feedback */
+            transform: scale(1.1);
+        }
+
+        .mba-section {
+            display: flex;
+            align-items: flex-start;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        /* Removes bottom border on the last item of each set */
+        #a-section, #rb3-section, #g3-section, #aml3-section, #rbai6-section { border-bottom: none; } 
+
+        /* Color Coding for MBA Sections */
+        #m-section { border-left: 8px solid #ffc107; padding-left: 20px; } 
+        #b-section { border-left: 8px solid #007bff; padding-left: 20px; } 
+        #a-section { border-left: 8px solid #28a745; padding-left: 20px; } 
+
+        /* Color Coding for Rule-Based AI Sections */
+        #rb1-section { border-left: 8px solid #6f42c1; padding-left: 20px; } /* Purple for main concept */
+        #rb2-section { border-left: 8px solid #dc3545; padding-left: 20px; } /* Red for example */
+        #rb3-section { border-left: 8px solid #17a2b8; padding-left: 20px; } /* Teal for clarity/strength */
+
+        /* Color Coding for Generative AI Sections (New Vibrant Pink/Orange Palette) */
+        #g1-section { border-left: 8px solid #ff8a80; padding-left: 20px; } /* Light Red for Generate */
+        #g2-section { border-left: 8px solid #f06292; padding-left: 20px; } /* Pink for Example */
+        #g3-section { border-left: 8px solid #ffeb3b; padding-left: 20px; } /* Yellow for Learn/Difference */
+        
+        /* Color Coding for AI, ML, DL Sections (Tech Palette: Blue, Orange, Purple) (NEW)*/
+        #aml1-section { border-left: 8px solid #007bff; padding-left: 20px; } /* Blue for AI (The Big Picture) */
+        #aml2-section { border-left: 8px solid #fd7e14; padding-left: 20px; } /* Orange for ML (The Learning Method) */
+        #aml3-section { border-left: 8px solid #6f42c1; padding-left: 20px; } /* Purple for DL (The Complex Structure) */
+        
+        /* Color Coding for Rule-Based vs AI Sections (Comprehensive Detail Palette) (NEW)*/
+        #rbai1-section { border-left: 8px solid #ff9800; padding-left: 20px; } /* Orange for Rule-Based & History */
+        #rbai2-section { border-left: 8px solid #2196f3; padding-left: 20px; } /* Blue for ML Rise */
+        #rbai3-section { border-left: 8px solid #4caf50; padding-left: 20px; } /* Green for ML Types */
+        #rbai4-section { border-left: 8px solid #9c27b0; padding-left: 20px; } /* Purple for Analytics */
+        #rbai5-section { border-left: 8px solid #795548; padding-left: 20px; } /* Brown for Deep Learning */
+        #rbai6-section { border-left: 8px solid #e91e63; padding-left: 20px; } /* Pink for Gen AI Models */
+
+        /* --- Custom Styling for Image-based Interaction (MODIFIED) --- */
+        .interaction-icon {
+            /* Keep for layout and click area (80x80) */
+            cursor: pointer;
+            width: 80px;
+            height: 80px; 
+            text-align: center;
+            margin-right: 30px;
+            
+            /* Remove box/square look */
+            background-color: transparent; 
+            border-radius: 0; 
+            box-shadow: none; 
+            padding: 0; 
+            
+            /* Center and transition */
+            transition: transform 0.3s;
+            z-index: 11; 
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Hover effect on the layout area */
+        .interaction-icon:hover { 
+            transform: scale(1.05); /* Slight lift on hover */
+        }
+
+        /* New class for the actual icon/emoji to control its size (NEW) */
+        .icon-emoji {
+            font-size: 5em; /* Significantly increase size to fill 80px area */
+            line-height: 1; /* Ensure no extra space pushes the container */
+            display: inline-block;
+        }
+        /* --- End Custom Styling --- */
+
+        /* --- Letter Styling (Old, kept for other pages) --- */
+        .mba-letter {
+            font-size: 4em;
+            font-weight: 900;
+            cursor: pointer;
+            width: 80px;
+            text-align: center;
+            margin-right: 30px;
+            padding: 10px 0;
+            transition: color 0.3s;
+            z-index: 11; 
+            position: relative;
+        }
+        .mba-letter:hover { color: #193f77; }
+
+        /* --- Content Area Styling (Step 1 & 2) --- */
+        .content-wrapper { flex-grow: 1; padding-top: 15px; }
+
+        .reveal-word {
+            font-size: 2em;
+            font-weight: 700;
+            color: #193f77;
+            display: none; 
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .icon {
+            font-size: 1.8em;
+            margin-left: 15px;
+            transition: transform 0.2s;
+        }
+        .icon:hover { transform: scale(1.1); }
+
+        .reveal-definition {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none; 
+            line-height: 1.6;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+        }
+
+        .visual-metaphor {
+            font-weight: 600;
+            color: #004d40; 
+            border-bottom: 2px solid #ffc107;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="home-page" class="page">
+        
+        <div style="z-index: 10; position: relative; text-align: center;">
+            
+            <div id="main-greeting-container">
+                <div id="main-greeting" onclick="showPage('navigation-page')">
+                    Takshak Business Leaders
+                </div>
+            </div>
+            
+            <div class="home-business-heads">
+                <p id="future-leaders-text">Future Business Leaders</p>
+                <div class="head-profiles">
+                    <div class="head-profile">🧑‍💼</div>
+                    <div class="head-profile">👩‍💼</div>
+                    <div class="head-profile">👨‍💼</div>
+                    <div class="head-profile">🏢</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="nav-buttons-container">
+        <button class="nav-button" onclick="showPage('mba-page')">MBA</button>
+        <button class="nav-button" onclick="showPage('ai-page')">Introduction to AI in Business</button>
+        <button class="nav-button" onclick="showPage('genai-page')">Generative AI</button>
+        <button class="nav-button" onclick="showPage('aimldl-page')">AI, ML, DL Differences</button>
+        <button class="nav-button" onclick="showPage('rbai-page')">Rule Based and AI - Detailed</button>
+    </div>
+
+    <div id="navigation-page" class="page">
+        <div class="business-interaction-bg"></div>
+
+        </div>
+
+    <div id="mba-page" class="page">
+        
+        <video autoplay loop muted playsinline id="background-video">
+            </video>
+        
+        <div class="mba-content-area">
+
+            <div id="reset-button-mba" class="reset-button" onclick="hideAllMBA()" title="Hide All Content">
+                👁️
+            </div>
+
+            <div id="m-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('m')">M</div>
+                <div class="content-wrapper">
+                    <div id="m-word" class="reveal-word" onclick="toggleDefinition('m')">
+                        Master
+                        <span class="icon" style="color: #ffc107;">🏆</span>
+                    </div>
+                    <div id="m-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🗣️</span> "I have great skill at doing something!" 
+                        </p>
+                        <p>
+                            Person who has great skill at doing something. (Represents the high level of expertise gained.)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="b-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('b')">B</div>
+                <div class="content-wrapper">
+                    <div id="b-word" class="reveal-word" onclick="toggleDefinition('b')">
+                        Business
+                        <span class="icon" style="color: #007bff;">🤝</span>
+                    </div>
+                    <div id="b-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🔄</span> Org, stakeholder, people focused on goods or services to customer with primary goal of earning profit
+                        </p>
+                        <p>
+                            Organization, stakeholders, and people focused on goods or services to a customer with the primary goal of earning profit.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="a-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('a')">A</div>
+                <div class="content-wrapper">
+                    <div id="a-word" class="reveal-word" onclick="toggleDefinition('a')">
+                        Administration
+                        <span class="icon" style="color: #28a745;">📋</span>
+                    </div>
+                    <div id="a-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🧭</span> Control, Act of managing
+                        </p>
+                        <p>
+                            Control, Act of managing. (The oversight and strategic direction.)
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="ai-page" class="page">
+        
+        <video autoplay loop muted playsinline id="background-video">
+            </video>
+        
+        <div class="mba-content-area">
+
+            <div id="reset-button-ai" class="reset-button" onclick="hideAllAI()" title="Hide All Content">
+                👁️
+            </div>
+            
+            <h2 style="color: #6f42c1; margin-bottom: 25px; border-bottom: 3px solid #6f42c1; padding-bottom: 5px;">Rule-Based Systems: The Precursor to AI</h2>
+
+            <div id="rb1-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('rb1')">R</div>
+                <div class="content-wrapper">
+                    <div id="rb1-word" class="reveal-word" onclick="toggleDefinition('rb1')" style="color: #6f42c1;">
+                        Rule-Based Execution
+                        <span class="icon" style="color: #6f42c1;">⚙️</span>
+                    </div>
+                    <div id="rb1-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">📜</span> Program-Based System
+                        </p>
+                        <p>
+                            This is the <strong>earlier system</strong> which is all about <strong>program-based execution</strong>. It is explicitly designed to solve problems based on a predetermined set of instructions.
+                        </p>
+                        <p style="font-weight: bold; color: #dc3545; margin-top: 10px;">
+                            ❌ Weakness: Lacks adaptability.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="rb2-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('rb2')">E</div>
+                <div class="content-wrapper">
+                    <div id="rb2-word" class="reveal-word" onclick="toggleDefinition('rb2')" style="color: #dc3545;">
+                        Example: Chess Logic
+                        <span class="icon" style="color: #dc3545;">♟️</span>
+                    </div>
+                    <div id="rb2-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🛡️</span> Defined Response
+                        </p>
+                        <p>
+                            In a game of Chess against a computer, the system is hard-coded to follow a specific <strong>rule</strong>: if the King is in Check, the system <strong>must</strong> move the King to a safe position.
+                        </p>
+                        <p style="font-weight: bold; color: #dc3545; margin-top: 10px;">
+                            ❌ Weakness: Lacks the ability to process large volumes of unstructured data.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="rb3-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('rb3')">S</div>
+                <div class="content-wrapper">
+                    <div id="rb3-word" class="reveal-word" onclick="toggleDefinition('rb3')" style="color: #17a2b8;">
+                        Clarity of Logic
+                        <span class="icon" style="color: #17a2b8;">✅</span>
+                    </div>
+                    <div id="rb3-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">📝</span> Easy to Understand
+                        </p>
+                        <p>
+                            Rule-based programming is <strong>easy to understand</strong> because you can define and clearly trace exactly how the system decides its outcome.
+                        </p>
+                        <p style="font-weight: bold; color: #dc3545; margin-top: 10px;">
+                            ❌ Final Weakness: Lacks the ability to learn from errors.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div id="genai-page" class="page">
+        
+        <video autoplay loop muted playsinline id="background-video">
+            </video>
+        
+        <div class="mba-content-area">
+
+            <div id="reset-button-genai" class="reset-button" onclick="hideAllGenAI()" title="Hide All Content">
+                👁️
+            </div>
+            
+            <h2 style="color: #f06292; margin-bottom: 25px; border-bottom: 3px solid #f06292; padding-bottom: 5px;">Generative AI: The Creative Machine</h2>
+
+            <div id="g1-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('g1')">G</div>
+                <div class="content-wrapper">
+                    <div id="g1-word" class="reveal-word" onclick="toggleDefinition('g1')" style="color: #ff8a80;">
+                        Generate
+                        <span class="icon" style="color: #ff8a80;">✨</span>
+                    </div>
+                    <div id="g1-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🎨</span> Create Something New
+                        </p>
+                        <p>
+                            <strong>Generative AI</strong> is a type of computer program that can create new things—like stories, images, music, or computer code—that have never existed before. Think of it as a creative brain.
+                        </p>
+                        <p style="font-weight: bold; color: #28a745; margin-top: 10px;">
+                            ✅ Strength: Produces unique, diverse, and creative outputs.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="g2-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('g2')">E</div>
+                <div class="content-wrapper">
+                    <div id="g2-word" class="reveal-word" onclick="toggleDefinition('g2')" style="color: #f06292;">
+                        Examples
+                        <span class="icon" style="color: #f06292;">📝</span>
+                    </div>
+                    <div id="g2-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">💬</span> Creative Tasks
+                        </p>
+                        <p>
+                            If you ask it, "Write me an email to a client," it writes it. If you ask it to "Draw a picture of a dog wearing a tie," it draws it. It makes things based on simple text prompts (your instructions).
+                        </p>
+                        <p style="font-weight: bold; color: #28a745; margin-top: 10px;">
+                            ✅ Strength: Handles complex language and creative requests easily.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="g3-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('g3')">L</div>
+                <div class="content-wrapper">
+                    <div id="g3-word" class="reveal-word" onclick="toggleDefinition('g3')" style="color: #ffeb3b; color: #8d6e63;">
+                        Learns Patterns
+                        <span class="icon" style="color: #ffeb3b; color: #8d6e63;">🧠</span>
+                    </div>
+                    <div id="g3-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">📈</span> Trained on Data
+                        </p>
+                        <p>
+                            Unlike the Rule-Based system (which only follows `if X, then Y`), GenAI learns by looking at billions of examples. It doesn't learn rules, it learns <strong>patterns</strong>, like proper grammar, realistic drawing styles, or musical harmony, to create believable and new outputs.
+                        </p>
+                        <p style="font-weight: bold; color: #28a745; margin-top: 10px;">
+                            ✅ Strength: Highly adaptable and gets better with more data.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div id="aimldl-page" class="page">
+        
+        <video autoplay loop muted playsinline id="background-video">
+            </video>
+        
+        <div class="mba-content-area">
+
+            <div id="reset-button-aimldl" class="reset-button" onclick="hideAllAIMLDL()" title="Hide All Content">
+                👁️
+            </div>
+            
+            <h2 style="color: #007bff; margin-bottom: 25px; border-bottom: 3px solid #007bff; padding-bottom: 5px;">AI, ML, DL: The Funnel of Intelligence</h2>
+
+            <div id="aml1-section" class="mba-section">
+                <div class="interaction-icon" onclick="toggleWord('aml1')">
+                    <span class="icon-emoji" style="color: #007bff;">🤖</span> 
+                </div>
+                <div class="content-wrapper">
+                    <div id="aml1-word" class="reveal-word" onclick="toggleDefinition('aml1')" style="color: #007bff;">
+                        Artificial Intelligence (AI)
+                        <span class="icon" style="color: #007bff;">🎯</span>
+                    </div>
+                    <div id="aml1-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🔭</span> The Wide Field of View
+                        </p>
+                        <p>
+                            **AI** is the **widest circle**, the entire scientific field of trying to make machines **mimic human intelligence**. This includes anything that makes a computer seem "smart," whether it uses simple rules or complex learning.
+                        </p>
+                        <p style="font-weight: bold; color: #007bff; margin-top: 10px;">
+                            Think of it as: **Any technique** that makes a machine solve problems like a human.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="aml2-section" class="mba-section">
+                <div class="interaction-icon" onclick="toggleWord('aml2')">
+                    <span class="icon-emoji" style="color: #fd7e14;">📈</span>
+                </div>
+                <div class="content-wrapper">
+                    <div id="aml2-word" class="reveal-word" onclick="toggleDefinition('aml2')" style="color: #fd7e14;">
+                        Machine Learning (ML)
+                        <span class="icon" style="color: #fd7e14;">🔨</span>
+                    </div>
+                    <div id="aml2-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🔬</span> Zooming In: Learning from Data
+                        </p>
+                        <p>
+                            **Machine Learning** is a **tool or subset inside AI**. This specific method achieves intelligence by making the computer **learn from data** (getting better with experience), rather than being told every single step or rule.
+                        </p>
+                        <p style="font-weight: bold; color: #fd7e14; margin-top: 10px;">
+                            Think of it as: **A machine learning rules** by looking at thousands of examples.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="aml3-section" class="mba-section">
+                <div class="interaction-icon" onclick="toggleWord('aml3')">
+                    <span class="icon-emoji" style="color: #6f42c1;">🧠</span>
+                </div>
+                <div class="content-wrapper">
+                    <div id="aml3-word" class="reveal-word" onclick="toggleDefinition('aml3')" style="color: #6f42c1;">
+                        Deep Learning (DL)
+                        <span class="icon" style="color: #6f42c1;">⚡</span>
+                    </div>
+                    <div id="aml3-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🔎</span> Ultra-Zoom: The Neural Network
+                        </p>
+                        <p>
+                            **Deep Learning** is a **powerful technique inside ML**. It uses complex, multi-layered structures (called **Deep Neural Networks**) which allow it to handle huge amounts of unstructured data (like images and video), making it the engine behind the most advanced AI applications today.
+                        </p>
+                        <p style="font-weight: bold; color: #6f42c1; margin-top: 10px;">
+                            Think of it as: **The most powerful engine** for learning very complex, subtle patterns.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="rbai-page" class="page">
+        
+        <video autoplay loop muted playsinline id="background-video">
+            </video>
+        
+        <div class="mba-content-area">
+
+            <div id="reset-button-rbai" class="reset-button" onclick="hideAllRBAI()" title="Hide All Content">
+                👁️
+            </div>
+            
+            <h2 style="color: #9c27b0; margin-bottom: 25px; border-bottom: 3px solid #9c27b0; padding-bottom: 5px;">Rule-Based vs. Machine Learning: The Detailed Evolution</h2>
+
+            <div id="rbai1-section" class="mba-section">
+                <div class="interaction-icon" onclick="toggleWord('rbai1')">
+                    <span class="icon-emoji" style="color: #ff9800;">📜</span> 
+                </div>
+                <div class="content-wrapper">
+                    <div id="rbai1-word" class="reveal-word" onclick="toggleDefinition('rbai1')" style="color: #ff9800;">
+                        Rule-Based Systems: History & Limits
+                        <span class="icon" style="color: #ff9800;">⚙️</span>
+                    </div>
+                    <div id="rbai1-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🧩</span> Defined by "If-Then" Logic
+                        </p>
+                        <ul>
+                            <li>**Core Logic:** Systems use **if-then** or **if-else statements** for problem-solving.</li>
+                            <li>**Historical Example:** The **General Problem Solver (1950)** by Herbert A. Simon & Allen Newell, designed to break problems into smaller ones.</li>
+                            <li>**Early Application:** **MYCIN (1970s)**, which diagnosed bacterial infections, showcased AI's potential for **practical applications**.</li>
+                        </ul>
+                        <h4 style="color: #dc3545; margin-top: 15px;">**Limitations:**</h4>
+                        <ul>
+                            <li>**Lack of Flexibility:** Operates strictly within **predefined rules and boundaries**.</li>
+                            <li>**Adaptability:** **Difficult to adapt** to new, uncoded situations or domains.</li>
+                            <li>**Complexity/Stability:** Increased complexity leads to **stability challenges** and difficult maintenance.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="rbai2-section" class="mba-section">
+                <div class="interaction-icon" onclick="toggleWord('rbai2')">
+                    <span class="icon-emoji" style="color: #2196f3;">🚀</span> 
+                </div>
+                <div class="content-wrapper">
+                    <div id="rbai2-word" class="reveal-word" onclick="toggleDefinition('rbai2')" style="color: #2196f3;">
+                        Rise of Machine Learning (ML)
+                        <span class="icon" style="color: #2196f3;">📈</span>
+                    </div>
+                    <div id="rbai2-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🗓️</span> The 1990s Shift in AI Development
+                        </p>
+                        <p>
+                            The need to overcome the limitations of rule-based systems drove the rise of **Machine Learning** in the **1990s**.
+                        </p>
+                        <ul>
+                            <li>**Core Function:** Learns **patterns** and makes decisions based on the **data** it processes, not explicit programming.</li>
+                            <li>**Adaptation:** Learning from data allows ML to **adapt and improve** its performance over time.</li>
+                            <li>**Nature:** It is considered **Flexible & Powerful** due to its ability to handle complex and dynamic scenarios.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="rbai3-section" class="mba-section">
+                <div class="interaction-icon" onclick="toggleWord('rbai3')">
+                    <span class="icon-emoji" style="color: #4caf50;">💡</span> 
+                </div>
+                <div class="content-wrapper">
+                    <div id="rbai3-word" class="reveal-word" onclick="toggleDefinition('rbai3')" style="color: #4caf50;">
+                        Key ML Learning Types (The 3 Varieties)
+                        <span class="icon" style="color: #4caf50;">📚</span>
+                    </div>
+                    <div id="rbai3-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🔬</span> Varieties of Learning
+                        </p>
+                        <p>These concepts define how an ML model acquires knowledge:</p>
+                        <ul>
+                            <li>**Supervised Learning:** Learns from **labeled data** (input and correct output are provided).</li>
+                            <li>**Unsupervised Learning:** Learns from **unlabeled data** to find hidden patterns or groupings.</li>
+                            <li>**Reinforcement Learning:** Learns by **interacting with an environment**, receiving rewards for correct actions.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="rbai4-section" class="mba-section">
+                <div class="interaction-icon" onclick="toggleWord('rbai4')">
+                    <span class="icon-emoji" style="color: #9c27b0;">🔮</span> 
+                </div>
+                <div class="content-wrapper">
+                    <div id="rbai4-word" class="reveal-word" onclick="toggleDefinition('rbai4')" style="color: #9c27b0;">
+                        Analytics: Predictive & Prescriptive
+                        <span class="icon" style="color: #9c27b0;">🧭</span>
+                    </div>
+                    <div id="rbai4-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">📈</span> ML in Business Foresight
+                        </p>
+                        <h4 style="color: #dc3545;">**Predictive Analytics (1990s)**</h4>
+                        <p>Uses **statistical techniques** to **forecast** trends and behavior. Used across finance, healthcare, and retail to **predict risk, demand, and customer preferences**.</p>
+                        <h4 style="color: #007bff; margin-top: 15px;">**Prescriptive Analytics (Developed 2000s)**</h4>
+                        <p>Focuses on providing **recommendations** for optimal outcomes (e.g., "what should we do next?").</p>
+                        <p style="font-weight: bold; margin-top: 10px;">
+                            ML Breakthroughs in the 2000s: **Handwriting, Spam recognition, Speech Recognition.**
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="rbai5-section" class="mba-section">
+                <div class="interaction-icon" onclick="toggleWord('rbai5')">
+                    <span class="icon-emoji" style="color: #795548;">🧠</span> 
+                </div>
+                <div class="content-wrapper">
+                    <div id="rbai5-word" class="reveal-word" onclick="toggleDefinition('rbai5')" style="color: #795548;">
+                        Deep Learning: The Human Brain's Model
+                        <span class="icon" style="color: #795548;">🚗</span>
+                    </div>
+                    <div id="rbai5-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🌟</span> Advanced Applications
+                        </p>
+                        <p>
+                            **Deep Learning** is directly **inspired by the structure and function of the human brain**.
+                        </p>
+                        <h4 style="color: #795548; margin-top: 10px;">**Advanced Applications:**</h4>
+                        <ul>
+                            <li>Image recognition</li>
+                            <li>Natural Language Processing (NLP)</li>
+                            <li>Automated Cars</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="rbai6-section" class="mba-section">
+                <div class="interaction-icon" onclick="toggleWord('rbai6')">
+                    <span class="icon-emoji" style="color: #e91e63;">✨</span> 
+                </div>
+                <div class="content-wrapper">
+                    <div id="rbai6-word" class="reveal-word" onclick="toggleDefinition('rbai6')" style="color: #e91e63;">
+                        Generative AI: Models and Applications
+                        <span class="icon" style="color: #e91e63;">🎨</span>
+                    </div>
+                    <div id="rbai6-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">✍️</span> Creative & Original Output
+                        </p>
+                        <p>
+                            Gen AI algorithms **generate new data** and produce **creative & original output**, relying on a **Pretrained Dependency**.
+                        </p>
+                        <h4 style="color: #f06292; margin-top: 10px;">**Key Models:**</h4>
+                        <ul>
+                            <li>**GPT (Generative Pre-Trained Transformer - OpenAI):** Understands and generates human-like text, essays, and code.
+                                <br>**Text-Based Applications:** Content Creation, Customer Service, Education.
+                            </li>
+                            <li>**DALL-E:** Transforms **text into images** and visuals from descriptions.
+                                <br>**Visual Applications:** Advertising, Design, Entertainment.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <script>
+        // Function to show the correct page on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialPage = window.location.hash ? window.location.hash.substring(1) : 'home-page';
+            showPage(initialPage);
+        });
+
+        // Function to switch between pages
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // Display the target page
+            document.getElementById(pageId).style.display = 'flex'; 
+            window.location.hash = pageId;
+
+            // --- NEW LOGIC FOR SIDE PANEL VISIBILITY ---
+            const navPanel = document.querySelector('.nav-buttons-container');
+            if (navPanel) {
+                // Hide the panel only on the home page, show it everywhere else
+                if (pageId === 'home-page') {
+                    navPanel.style.display = 'none';
+                } else {
+                    navPanel.style.display = 'flex'; 
+                }
+            }
+            // --- END NEW LOGIC ---
+        }
+
+        // ----------------------------------------------------------------------
+        // MODIFIED FUNCTION: Now only shows the word, and does NOT hide others.
+        // ----------------------------------------------------------------------
+        function toggleWord(id) {
+            const wordElement = document.getElementById(id + '-word');
+            const definitionElement = document.getElementById(id + '-definition');
+            
+            // Always show the word element when the letter/icon is clicked
+            wordElement.style.display = 'flex';
+            
+            // Ensure the definition is hidden when the word is first revealed (Step 2 is separate)
+            definitionElement.style.display = 'none'; 
+        }
+
+        // Function to toggle the Definition (Step 2: Icon Click)
+        function toggleDefinition(id) {
+            const definitionElement = document.getElementById(id + '-definition');
+            // Toggle the display of the definition
+            definitionElement.style.display = (definitionElement.style.display === 'block' ? 'none' : 'block');
+        }
+
+        // Function for MBA page reset
+        function hideAllMBA() {
+            // Iterate over all three MBA sections and hide both the word and the definition
+            ['m', 'b', 'a'].forEach(id => {
+                const wordElement = document.getElementById(id + '-word');
+                const definitionElement = document.getElementById(id + '-definition');
+                if (wordElement) wordElement.style.display = 'none';
+                if (definitionElement) definitionElement.style.display = 'none';
+            });
+        }
+
+        // Function to hide all revealed content on the AI page
+        function hideAllAI() {
+            // Iterate over all three AI sections and hide both the word and the definition
+            ['rb1', 'rb2', 'rb3'].forEach(id => {
+                const wordElement = document.getElementById(id + '-word');
+                const definitionElement = document.getElementById(id + '-definition');
+                if (wordElement) wordElement.style.display = 'none';
+                if (definitionElement) definitionElement.style.display = 'none';
+            });
+        }
+        
+        // Function to hide all revealed content on the GenAI page
+        function hideAllGenAI() {
+            // Iterate over all three GenAI sections and hide both the word and the definition
+            ['g1', 'g2', 'g3'].forEach(id => {
+                const wordElement = document.getElementById(id + '-word');
+                const definitionElement = document.getElementById(id + '-definition');
+                if (wordElement) wordElement.style.display = 'none';
+                if (definitionElement) definitionElement.style.display = 'none';
+            });
+        }
+
+        // Function to hide all revealed content on the AI, ML, DL page
+        function hideAllAIMLDL() {
+            // Iterate over all three AI, ML, DL sections and hide both the word and the definition
+            ['aml1', 'aml2', 'aml3'].forEach(id => {
+                const wordElement = document.getElementById(id + '-word');
+                const definitionElement = document.getElementById(id + '-definition');
+                if (wordElement) wordElement.style.display = 'none';
+                if (definitionElement) definitionElement.style.display = 'none';
+            });
+        }
+        
+        // NEW Function to hide all revealed content on the Rule Based vs AI page
+        function hideAllRBAI() {
+            // Iterate over all six Rule Based vs AI sections and hide both the word and the definition
+            ['rbai1', 'rbai2', 'rbai3', 'rbai4', 'rbai5', 'rbai6'].forEach(id => {
+                const wordElement = document.getElementById(id + '-word');
+                const definitionElement = document.getElementById(id + '-definition');
+                if (wordElement) wordElement.style.display = 'none';
+                if (definitionElement) definitionElement.style.display = 'none';
+            });
+        }
+
+        // Update the MBA reset button to use the new function name
+        document.getElementById('reset-button-mba').onclick = hideAllMBA;
+    </script>
+
+</body>
+</html>

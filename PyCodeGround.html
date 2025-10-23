@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 3 Interpreter + Visualizer (Fixed)</title>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0f172a, #6b21a8, #0f172a); 
+            color: white; 
+            min-height: 100vh; 
+            padding: 20px;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { 
+            font-size: 2.5rem; 
+            background: linear-gradient(45deg, #06b6d4, #a855f7); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            margin-bottom: 10px; 
+        }
+        
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 10px;
+            border: 2px solid #3b82f6;
+        }
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #64748b;
+            border-radius: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .toggle-switch.active { background: #10b981; }
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        .toggle-switch.active .toggle-slider { left: 33px; }
+        
+        .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 1200px) { .layout { grid-template-columns: 1fr; } }
+        
+        .panel { display: flex; flex-direction: column; gap: 15px; }
+        
+        .controls { 
+            display: flex; 
+            justify-content: space-between; 
+            gap: 10px;
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }
+        .btn { 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-run { background: #10b981; color: white; }
+        .btn-run:hover:not(:disabled) { background: #059669; }
+        .btn-clear { background: #6b7280; color: white; }
+        .btn-clear:hover { background: #4b5563; }
+        .btn-examples { background: #3b82f6; color: white; }
+        .btn-examples:hover { background: #2563eb; }
+        
+        .box { 
+            background: #1e293b; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .box-header { 
+            background: #334155; 
+            padding: 12px 20px; 
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        #code-input { 
+            width: 100%; 
+            height: 400px; 
+            background: #0f172a; 
+            color: #10b981; 
+            font-family: 'Courier New', monospace; 
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 20px; 
+            border: none; 
+            resize: none; 
+            outline: none;
+            tab-size: 4;
+        }
+        
+        #output { 
+            padding: 20px; 
+            min-height: 200px;
+            max-height: 300px;
+            background: #000; 
+            font-family: 'Courier New', monospace; 
+            font-size: 14px;
+            color: #10b981; 
+            overflow-y: auto; 
+            white-space: pre-wrap;
+        }
+        .error-output { color: #ef4444 !important; }
+        
+        .viz-controls {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-step { background: #3b82f6; color: white; padding: 8px 16px; font-size: 13px; }
+        .btn-step:hover:not(:disabled) { background: #2563eb; }
+        .step-info {
+            padding: 8px 16px;
+            background: #334155;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+        
+        .code-display {
+            padding: 20px;
+            background: #0f172a;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .code-line {
+            padding: 2px 8px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .code-line.current {
+            background: rgba(59, 130, 246, 0.3);
+            border-left-color: #3b82f6;
+            font-weight: 600;
+        }
+        .code-line.executed {
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .variables-content, .stack-content {
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            background: #0f172a;
+        }
+        .var-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #1e293b;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .var-name { color: #60a5fa; font-weight: 600; }
+        .var-value { color: #34d399; word-break: break-all; }
+        
+        .stack-frame {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #1e293b;
+            border-radius: 5px;
+            border-left: 3px solid #8b5cf6;
+        }
+        
+        .hidden { display: none !important; }
+        .info-badge {
+            padding: 4px 8px;
+            background: #3b82f6;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .example-btn {
+            padding: 10px;
+            background: #334155;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            text-align: left;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        .example-btn:hover {
+            background: #475569;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Python 3 Interpreter + Step-by-Step Visualizer</h1>
+            <p style="font-size: 1.1rem; color: #94a3b8;">Execute Python Code with Optional Visualization</p>
+        </div>
+
+        <div class="mode-toggle">
+            <label class="toggle-label" onclick="toggleVisualizationMode()">
+                <div class="toggle-switch" id="vizToggle">
+                    <div class="toggle-slider"></div>
+                </div>
+                <span id="modeLabel">Fast Execution Mode</span>
+                <span class="info-badge">Click to Toggle</span>
+            </label>
+        </div>
+
+        <div class="layout">
+            <div class="panel">
+                <div class="controls">
+                    <button class="btn btn-examples" onclick="toggleExamples()">📚 Examples</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-clear" onclick="clearCode()">🗑️ Clear</button>
+                        <button class="btn btn-run" onclick="runCode()">▶️ Run Code</button>
+                    </div>
+                </div>
+
+                <div class="box" id="examplesBox" style="display: none;">
+                    <div class="box-header">📚 Code Examples</div>
+                    <div class="examples-grid" id="examplesList"></div>
+                </div>
+
+                <div class="box">
+                    <div class="box-header">💻 Python Editor</div>
+                    <textarea id="code-input" spellcheck="false"># Example for incremental visualization:
+for i in range(1, 6):
+    print(i)
+</textarea>
+                </div>
+
+                <div class="box">
+                    <div class="box-header">📟 Console Output</div>
+                    <div id="output">Click 'Run Code' to execute...</div>
+                </div>
+            </div>
+
+            <div class="panel" id="vizPanel">
+                <div class="viz-controls hidden" id="vizControls">
+                    <button class="btn btn-step" onclick="resetViz()">⏮️ Reset</button>
+                    <button class="btn btn-step" onclick="stepBack()" id="backBtn">◀️ Back</button>
+                    <button class="btn btn-step" onclick="stepForward()" id="fwdBtn">Step ▶️</button>
+                    <div class="step-info" id="stepInfo">Ready</div>
+                </div>
+
+                <div class="box hidden" id="codeVizBox">
+                    <div class="box-header">
+                        📝 Code Execution
+                        <span id="eventBadge" class="info-badge">LINE</span>
+                    </div>
+                    <div class="code-display" id="codeDisplay"></div>
+                </div>
+
+                <div class="box hidden" id="varsBox">
+                    <div class="box-header">🔍 Variables</div>
+                    <div class="variables-content" id="varsDisplay">No variables</div>
+                </div>
+
+                <div class="box hidden" id="stackBox">
+                    <div class="box-header">📚 Call Stack</div>
+                    <div class="stack-content" id="stackDisplay">No frames</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let visualizationMode = false;
+        let trace = [];
+        let currentStep = 0;
+        let executedLines = new Set();
+
+        const examples = [
+            { title: "Variables", code: `x = 10\ny = 20\nz = x + y\nprint(f"Sum: {z}")` },
+            { title: "Function", code: `def add(a, b):\n    return a + b\n\nresult = add(5, 3)\nprint(result)` },
+            { title: "Loop", code: `for i in range(5):\n    print(f"Count: {i}")` },
+            { title: "List", code: `nums = [1, 2, 3]\nnums.append(4)\nprint(nums)` },
+            { title: "Factorial (Rec.)", code: `def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(5))` },
+            { title: "Fibonacci (Rec.)", code: `def fib(n):\n    if n <= 1:\n        return n\n    return fib(n-1) + fib(n-2)\n\nprint(fib(7))` }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize the visualization mode based on its initial state (off)
+            toggleVisualizationMode(); 
+            loadExamplesList();
+        });
+
+        function toggleVisualizationMode() {
+            visualizationMode = !visualizationMode;
+            const toggle = document.getElementById('vizToggle');
+            const label = document.getElementById('modeLabel');
+            
+            if (visualizationMode) {
+                toggle.classList.add('active');
+                label.textContent = 'Visualization Mode (Step-by-Step)';
+            } else {
+                toggle.classList.remove('active');
+                label.textContent = 'Fast Execution Mode';
+                hideVisualization();
+            }
+        }
+
+        function hideVisualization() {
+            document.getElementById('vizControls').classList.add('hidden');
+            document.getElementById('codeVizBox').classList.add('hidden');
+            document.getElementById('varsBox').classList.add('hidden');
+            document.getElementById('stackBox').classList.add('hidden');
+        }
+
+        function showVisualization() {
+            // Crucial: Ensure these elements are visible
+            document.getElementById('vizControls').classList.remove('hidden');
+            document.getElementById('codeVizBox').classList.remove('hidden');
+            document.getElementById('varsBox').classList.remove('hidden');
+            document.getElementById('stackBox').classList.remove('hidden');
+        }
+
+        function toggleExamples() {
+            const box = document.getElementById('examplesBox');
+            if (box.style.display === 'none') {
+                box.style.display = 'block';
+                loadExamplesList();
+            } else {
+                box.style.display = 'none';
+            }
+        }
+
+        function loadExamplesList() {
+            const list = document.getElementById('examplesList');
+            list.innerHTML = '';
+            examples.forEach((ex, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'example-btn';
+                btn.textContent = ex.title;
+                btn.onclick = () => {
+                    document.getElementById('code-input').value = ex.code;
+                    document.getElementById('examplesBox').style.display = 'none';
+                };
+                list.appendChild(btn);
+            });
+        }
+
+        function runCode() {
+            const code = document.getElementById('code-input').value;
+            if (visualizationMode) {
+                runWithVisualization(code);
+            } else {
+                runFastExecution(code);
+                hideVisualization();
+            }
+        }
+
+        function runFastExecution(code) {
+            const outputEl = document.getElementById('output');
+            outputEl.textContent = 'Executing...';
+            outputEl.className = '';
+
+            Sk.configure({
+                output: (text) => { outputEl.textContent += text; },
+                read: (filename) => {
+                    if (Sk.builtinFiles && Sk.builtinFiles["files"][filename]) {
+                        return Sk.builtinFiles["files"][filename];
+                    }
+                    throw "File not found";
+                },
+                __future__: Sk.python3
+            });
+
+            outputEl.textContent = '';
+
+            Sk.misceval.asyncToPromise(() => {
+                return Sk.importMainWithBody("<stdin>", false, code, true);
+            }).then(
+                () => {
+                    if (outputEl.textContent === '') {
+                        outputEl.textContent = 'Code executed successfully (no output)';
+                    }
+                },
+                (err) => {
+                    outputEl.textContent = err.toString();
+                    outputEl.className = 'error-output';
+                }
+            );
+        }
+
+        /**
+         * @param {*} val - The Skulpt internal object value.
+         * @returns {string} - The formatted string representation.
+         */
+        function formatValue(val) {
+            if (val === null || val === undefined) return 'None';
+            if (val === true) return 'True';
+            if (val === false) return 'False';
+            if (typeof val === 'string') return `"${val}"`;
+            if (typeof val === 'number') return String(val);
+            
+            // Skulpt objects
+            if (val.v !== undefined) {
+                if (val.tp === Sk.builtin.int_.prototype || val.tp === Sk.builtin.float_.prototype) return String(val.v);
+                if (val.tp === Sk.builtin.str_.prototype) return `"${val.v}"`;
+                return formatValue(val.v);
+            }
+            if (val.$r) {
+                try {
+                    const repr = Sk.misceval.callsim(val.$r, val);
+                    return Sk.ffi.remapToJs(repr);
+                } catch(e) {
+                    return `[${val.tp ? val.tp.name : 'Object'}]`; 
+                }
+            }
+            
+            if (Array.isArray(val)) return `[${val.map(formatValue).join(', ')}]`;
+            
+            return String(val).substring(0, 50); 
+        }
+
+        function runWithVisualization(code) {
+            const outputEl = document.getElementById('output');
+            outputEl.textContent = 'Generating trace...';
+            outputEl.className = '';
+            
+            trace = [];
+            currentStep = 0;
+            executedLines = new Set();
+            let capturedOutput = '';
+            let isRunning = true; 
+
+            // --- TRACING FUNCTION (Core Logic) ---
+            function tracer(filename, lineno, colno, funcname, locals, globals, type, frame) {
+                if (!isRunning || lineno === 0) return; 
+
+                // 1. Capture Variables (locals and globals)
+                const currentVars = {};
+                
+                // Get variables from the current frame's local scope (most specific)
+                if (frame && frame.loc && frame.loc.d) {
+                    for (let key in frame.loc.d) {
+                         if (!key.startsWith('__') && !key.startsWith('$')) {
+                            try {
+                                currentVars[key] = formatValue(frame.loc.d[key]);
+                            } catch(e) {}
+                        }
+                    }
+                }
+                
+                // Add module-level variables (for top-level)
+                if (frame && frame.parent === null && globals && globals.d) {
+                     for (let key in globals.d) {
+                        if (!key.startsWith('__') && !key.startsWith('$')) {
+                            try {
+                                currentVars[key] = formatValue(globals.d[key]);
+                            } catch(e) {}
+                        }
+                    }
+                }
+
+                // 2. Capture Call Stack
+                const stack = [];
+                let currentFrame = frame;
+                while (currentFrame) {
+                    stack.push(currentFrame.funcname || '<module>');
+                    currentFrame = currentFrame.parent;
+                }
+                stack.reverse(); 
+
+                // 3. Capture Trace Step
+                trace.push({
+                    step: trace.length,
+                    line: lineno - 1, 
+                    event: type, 
+                    vars: currentVars,
+                    stack: stack,
+                    output: capturedOutput
+                });
+            }
+            // ---------------------------------------
+
+            Sk.configure({
+                output: (text) => { 
+                    capturedOutput += text;
+                },
+                read: (filename) => {
+                    if (Sk.builtinFiles && Sk.builtinFiles["files"][filename]) {
+                        return Sk.builtinFiles["files"][filename];
+                    }
+                    throw "File not found";
+                },
+                __future__: Sk.python3,
+                stepper: tracer, // Enable step-by-step tracing
+                execLimit: 5000 
+            });
+
+            // Initial 'start' step
+            trace.push({
+                step: 0,
+                line: -1,
+                event: 'start',
+                vars: {},
+                stack: ['<module>'],
+                output: ''
+            });
+            
+            Sk.misceval.asyncToPromise(() => {
+                Sk.execLimit = 5000;
+                return Sk.importMainWithBody("<stdin>", false, code, true);
+            }).then(
+                () => {
+                    isRunning = false; 
+
+                    const lastStep = trace[trace.length - 1] || {};
+
+                    // Add a final 'end' step
+                    trace.push({
+                        step: trace.length,
+                        line: -1, 
+                        event: 'end',
+                        vars: lastStep.vars || {},
+                        stack: lastStep.stack || ['<module>'],
+                        output: capturedOutput
+                    });
+
+                    if (trace.length > 2) { 
+                        // --- MANDATORY VISIBILITY FIX ---
+                        showVisualization();
+                        
+                        // Start visualization at the first actual code step (Step 1)
+                        currentStep = 1; 
+                        
+                        // Execute the logic for the first step
+                        stepForward(false); // Move to step 1 and update view, but don't increment again
+                        // The actual stepForward/updateVisualization logic now handles the first step correctly.
+                        
+                        outputEl.textContent = 'Visualization ready! Use Step buttons.\n\n' + capturedOutput;
+                    } else {
+                        outputEl.textContent = capturedOutput || 'Code executed successfully (no visualization steps generated)';
+                        hideVisualization();
+                    }
+                },
+                (err) => {
+                    isRunning = false; 
+                    outputEl.textContent = 'Error: ' + err.toString();
+                    outputEl.className = 'error-output';
+                    hideVisualization();
+                }
+            );
+        }
+
+        function updateVisualization() {
+            if (trace.length === 0 || currentStep >= trace.length) return;
+
+            const step = trace[currentStep];
+            
+            document.getElementById('stepInfo').textContent = 
+                `Step ${currentStep} / ${trace.length - 1}`; // -1 because we count from step 1, ignoring step 0 ('start')
+            
+            // Update event badge
+            const badge = document.getElementById('eventBadge');
+            badge.textContent = step.event.toUpperCase();
+            badge.style.background = 
+                step.event === 'start' ? '#8b5cf6' :
+                step.event === 'end' ? '#10b981' : '#3b82f6';
+
+            // Update code display
+            const codeDisplay = document.getElementById('codeDisplay');
+            const lines = document.getElementById('code-input').value.split('\n');
+            codeDisplay.innerHTML = '';
+            
+            lines.forEach((line, i) => {
+                const div = document.createElement('div');
+                div.className = 'code-line';
+                div.textContent = `${String(i + 1).padStart(3, ' ')}  ${line}`;
+                
+                if (i === step.line) {
+                    div.classList.add('current');
+                } 
+                if (executedLines.has(i)) {
+                    div.classList.add('executed');
+                }
+                
+                codeDisplay.appendChild(div);
+            });
+
+            // Scroll to current line
+            const currentLine = codeDisplay.querySelector('.current');
+            if (currentLine) {
+                currentLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // Update variables
+            const varsDisplay = document.getElementById('varsDisplay');
+            const varsKeys = Object.keys(step.vars);
+            if (step.vars && varsKeys.length > 0) {
+                varsDisplay.innerHTML = '';
+                varsKeys.sort().forEach(name => {
+                    const value = step.vars[name];
+                    const div = document.createElement('div');
+                    div.className = 'var-item';
+                    div.innerHTML = `
+                        <span class="var-name">${name}</span>
+                        <span class="var-value">${value}</span>
+                    `;
+                    varsDisplay.appendChild(div);
+                });
+            } else {
+                varsDisplay.textContent = 'No variables yet';
+            }
+
+            // Update console output
+            document.getElementById('output').textContent = 
+                'Visualization in progress. Console output captured up to this step:\n\n' + step.output;
+
+            // Update call stack
+            const stackDisplay = document.getElementById('stackDisplay');
+            if (step.stack && step.stack.length > 0) {
+                stackDisplay.innerHTML = '';
+                step.stack.slice().reverse().forEach(frame => {
+                    const div = document.createElement('div');
+                    div.className = 'stack-frame';
+                    div.textContent = frame;
+                    stackDisplay.appendChild(div);
+                });
+            } else {
+                stackDisplay.textContent = 'No frames';
+            }
+
+            // Update button states: Disable 'Back' at step 1 (first code line) and 'Forward' at 'end'
+            document.getElementById('backBtn').disabled = currentStep <= 1; 
+            document.getElementById('fwdBtn').disabled = currentStep >= trace.length - 1;
+        }
+
+        function stepForward(increment = true) {
+            if (currentStep < trace.length - 1) {
+                if (increment) currentStep++;
+                const step = trace[currentStep];
+
+                // Mark the line as executed when stepping forward past a 'line' event
+                if ((step.event === 'line' || step.event === 'return') && step.line !== -1) {
+                    executedLines.add(step.line);
+                }
+                
+                updateVisualization();
+            }
+        }
+
+        function stepBack() {
+            if (currentStep > 1) { 
+                currentStep--;
+                
+                // Recalculate executed lines based on the new currentStep
+                executedLines = new Set();
+                for (let i = 1; i <= currentStep; i++) {
+                    const step = trace[i];
+                    if ((step.event === 'line' || step.event === 'return') && step.line !== -1) {
+                         executedLines.add(step.line);
+                    }
+                }
+                
+                updateVisualization();
+            } else if (currentStep === 1) {
+                // Move back to 'start' step (step 0)
+                currentStep = 0;
+                executedLines = new Set();
+                updateVisualization();
+            }
+        }
+
+        function resetViz() {
+            // Reset to the first *meaningful* step (Step 1)
+            currentStep = 1; 
+            executedLines = new Set();
+            updateVisualization();
+        }
+
+        function clearCode() {
+            document.getElementById('code-input').value = '# Example for incremental visualization:\nfor i in range(1, 6):\n    print(i)';
+            document.getElementById('output').textContent = "Click 'Run Code' to execute...";
+            hideVisualization();
+            trace = [];
+            currentStep = 0;
+            executedLines = new Set();
+        }
+
+        // Tab key support
+        document.getElementById('code-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+    </script>
+</body>
+</html>

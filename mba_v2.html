@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TakshakMasters Interactive MBA</title>
+    <style>
+        /* --- General Animations and Base Styling --- */
+        
+        /* Original animation for "Future Business Leaders" (Gold, Blue, Green) */
+        @keyframes dynamicColorFuture {
+            0% { color: #ffc107; } /* Gold */
+            33% { color: #007bff; } /* Blue */
+            66% { color: #28a745; } /* Green */
+            100% { color: #ffc107; }
+        }
+
+        /* New animation for "Takshak Business Leaders" (Blue, Teal, Orange) */
+        @keyframes dynamicColorTakshak {
+            0% { color: #007bff; } /* Blue */
+            33% { color: #17a2b8; } /* Teal */
+            66% { color: #dc3545; } /* Red/Orange */
+            100% { color: #007bff; }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            color: #333;
+            transition: background-color 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        /* --- Page Containers --- */
+        .page {
+            display: none; 
+            min-height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        /* --- Homepage Styling --- */
+        #home-page {
+            display: flex;
+            /* Base color */
+            background-color: #193f77; 
+            flex-direction: column;
+            position: relative;
+            
+            /* --- BASE64 BACKGROUND ADDITION --- */
+            /* IMPORTANT: Replace the data string below (after base64,) 
+               with the actual Base64 CSS background data you generated. 
+            */
+            background-image: url("data:image/png;base64,iMORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAACzXTVzAAAAJklEQVQImWOUlpb+MDAwgxMDBnAAhIeHBXFzcwIHBxflg0hO3gQDAIeA7mC6+88tAAAAAElFTkSuQmCC");
+            background-repeat: repeat;
+            /* --- END BASE64 BACKGROUND ADDITION --- */
+        }
+        
+        /* --- Background Video Styling (for seamless full-screen loop) --- */
+        #background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the video covers the entire container */
+            z-index: 1; /* Keep it behind the main content */
+            opacity: 0.3; /* Subtle transparency */
+        }
+
+        /* --- LOGO STYLING (REMOVED) --- */
+        #main-greeting-container {
+            display: flex;
+            flex-direction: column; /* Stack elements */
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        /* #header-logo styles removed */
+        
+        #main-greeting {
+            font-size: 4em;
+            color: white;
+            cursor: pointer;
+            font-weight: 800;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            transition: color 0.3s, transform 0.3s;
+            /* Apply new distinct dynamic color animation */
+            animation: dynamicColorTakshak 5s infinite alternate; /* 5s speed, slightly slower than the other */
+        }
+        #main-greeting:hover {
+            color: #ffc107;
+            transform: scale(1.05);
+        }
+
+        .home-business-heads {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2); 
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        /* Apply the original dynamic color animation to the Future Business Leaders text */
+        #future-leaders-text {
+            font-size: 1.8em;
+            font-weight: bold;
+            animation: dynamicColorFuture 4s infinite alternate;
+            margin-bottom: 15px;
+        }
+
+        .head-profiles {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .head-profile {
+            background-color: #007bff;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- Navigation Page Styling (Intermediate Menu) --- */
+        #navigation-page {
+            background-color: #f4f7f9;
+            position: relative;
+        }
+
+        .business-interaction-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background-color: #e9ecef;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(0,123,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,193,7,0.1) 0%, transparent 50%);
+            animation: interactionPulse 10s infinite alternate;
+        }
+
+        @keyframes interactionPulse {
+            0% { background-size: 100% 100%, 100% 100%; opacity: 0.8; }
+            50% { background-size: 120% 120%, 80% 80%; opacity: 1; }
+            100% { background-size: 100% 100%, 100% 100%; opacity: 0.8; }
+        }
+
+        .business-interaction-bg::before,
+        .business-interaction-bg::after {
+            content: '';
+            position: absolute;
+            background-color: rgba(25, 63, 119, 0.05);
+            border-radius: 50%;
+            animation: moveAndFade 15s infinite linear;
+        }
+
+        @keyframes moveAndFade {
+            0% { transform: translate(0, 0) scale(0.8); opacity: 0.7; }
+            25% { transform: translate(20px, -20px) scale(1); opacity: 0.9; }
+            50% { transform: translate(0, 0) scale(1.2); opacity: 0.7; }
+            75% { transform: translate(-20px, 20px) scale(1); opacity: 0.9; }
+            100% { transform: translate(0, 0) scale(0.8); opacity: 0.7; }
+        }
+
+        /* --- SIDE PANEL STYLES --- */
+        .nav-buttons-container {
+            position: fixed; 
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 50;
+            width: 30px; 
+            height: auto; /* Changed to auto to accommodate multiple buttons */
+            background: #193f77; 
+            border-radius: 5px 0 0 5px;
+            transition: width 0.3s ease-out; 
+            overflow: hidden;
+            box-shadow: -3px 0 10px rgba(0, 0, 0, 0.3);
+            display: flex; 
+            flex-direction: column; /* Stack buttons vertically */
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        /* Expand the panel on hover */
+        .nav-buttons-container:hover {
+            width: 250px; /* Wider to accommodate the new longer tab text */
+        }
+        
+        /* Nav Button as Text (No Shape) */
+        .nav-button {
+            background: none; 
+            border: none;
+            color: white; 
+            padding: 15px 10px; 
+            font-size: 1.1em; /* Slightly smaller font for the longer text */
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: left;
+            white-space: nowrap; 
+            transition: color 0.2s;
+            transform: translateX(30px); 
+            transition: transform 0.3s ease-out;
+        }
+
+        /* Reveal the text inside the tab on container hover */
+        .nav-buttons-container:hover .nav-button {
+            transform: translateX(0); 
+        }
+
+        /* Hover effect on the text itself */
+        .nav-button:hover {
+            color: #ffc107; 
+        }
+        /* --- END SIDE PANEL STYLES --- */
+
+
+        /* --- MBA Page Styling --- */
+        #mba-page {
+            padding: 0; 
+            position: relative;
+            background-color: #f8f9fa;
+            overflow: hidden; 
+        }
+
+        /* --- AI Page Styling --- */
+        #ai-page {
+            padding: 0; 
+            position: relative;
+            background-color: #f8f9fa;
+            overflow: hidden; 
+        }
+
+        /* --- GenAI Page Styling --- */
+        #genai-page {
+            padding: 0; 
+            position: relative;
+            background-color: #f8f9fa;
+            overflow: hidden; 
+        }
+        
+        /* Ensure content is above the video */
+        .mba-content-area {
+            margin: 0 auto; 
+            max-width: 800px;
+            width: 100%;
+            /* Make content background slightly transparent to see the video */
+            background-color: rgba(255, 255, 255, 0.9); 
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative; /* Set context for absolute positioning of the reset button */
+            z-index: 10; 
+        }
+
+        /* --- Updated Reset Button Style: Top right of the frame, transparent --- */
+        .reset-button {
+            position: absolute;
+            /* Position relative to the parent .mba-content-area (the white frame) */
+            top: 10px; 
+            right: 10px;
+            
+            z-index: 20;
+            cursor: pointer;
+            /* Requested: Transparent background and no shadow */
+            background-color: transparent; 
+            color: #193f77; /* Dark blue eye icon */
+            width: 30px; 
+            height: 30px; 
+            border-radius: 50%; 
+            box-shadow: none; /* Remove box shadow */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s, transform 0.2s;
+            font-size: 1.2em; 
+        }
+        .reset-button:hover {
+            background-color: transparent;
+            color: #007bff; /* Blue on hover for subtle feedback */
+            transform: scale(1.1);
+        }
+
+        .mba-section {
+            display: flex;
+            align-items: flex-start;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        /* Removes bottom border on the last item of each set */
+        #a-section, #rb3-section, #g3-section { border-bottom: none; } 
+
+        /* Color Coding for MBA Sections */
+        #m-section { border-left: 8px solid #ffc107; padding-left: 20px; } 
+        #b-section { border-left: 8px solid #007bff; padding-left: 20px; } 
+        #a-section { border-left: 8px solid #28a745; padding-left: 20px; } 
+
+        /* Color Coding for Rule-Based AI Sections */
+        #rb1-section { border-left: 8px solid #6f42c1; padding-left: 20px; } /* Purple for main concept */
+        #rb2-section { border-left: 8px solid #dc3545; padding-left: 20px; } /* Red for example */
+        #rb3-section { border-left: 8px solid #17a2b8; padding-left: 20px; } /* Teal for clarity/strength */
+
+        /* Color Coding for Generative AI Sections (New Vibrant Pink/Orange Palette) */
+        #g1-section { border-left: 8px solid #ff8a80; padding-left: 20px; } /* Light Red for Generate */
+        #g2-section { border-left: 8px solid #f06292; padding-left: 20px; } /* Pink for Example */
+        #g3-section { border-left: 8px solid #ffeb3b; padding-left: 20px; } /* Yellow for Learn/Difference */
+
+        /* --- Letter Styling --- */
+        .mba-letter {
+            font-size: 4em;
+            font-weight: 900;
+            cursor: pointer;
+            width: 80px;
+            text-align: center;
+            margin-right: 30px;
+            padding: 10px 0;
+            transition: color 0.3s;
+            z-index: 11; 
+            position: relative;
+        }
+        .mba-letter:hover { color: #193f77; }
+
+        /* --- Content Area Styling (Step 1 & 2) --- */
+        .content-wrapper { flex-grow: 1; padding-top: 15px; }
+
+        .reveal-word {
+            font-size: 2em;
+            font-weight: 700;
+            color: #193f77;
+            display: none; 
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .icon {
+            font-size: 1.8em;
+            margin-left: 15px;
+            transition: transform 0.2s;
+        }
+        .icon:hover { transform: scale(1.1); }
+
+        .reveal-definition {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none; 
+            line-height: 1.6;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+        }
+
+        .visual-metaphor {
+            font-weight: 600;
+            color: #004d40; 
+            border-bottom: 2px solid #ffc107;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="home-page" class="page">
+        
+        <!-- Main Content (ensure it is on top of the background) -->
+        <div style="z-index: 10; position: relative; text-align: center;">
+            
+            <div id="main-greeting-container">
+                <!-- LOGO HTML REMOVED -->
+
+                <!-- TAKSHAK BUSINESS LEADERS - Now changing colors dynamically with distinct animation -->
+                <div id="main-greeting" onclick="showPage('navigation-page')">
+                    Takshak Business Leaders
+                </div>
+            </div>
+            
+            <div class="home-business-heads">
+                <!-- FUTURE BUSINESS LEADERS - Also changing colors dynamically with the original animation -->
+                <p id="future-leaders-text">Future Business Leaders</p>
+                <div class="head-profiles">
+                    <div class="head-profile">🧑‍💼</div>
+                    <div class="head-profile">👩‍💼</div>
+                    <div class="head-profile">👨‍💼</div>
+                    <div class="head-profile">🏢</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="navigation-page" class="page">
+        <div class="business-interaction-bg"></div>
+
+        <div class="nav-buttons-container">
+            <button class="nav-button" onclick="showPage('mba-page')">MBA</button>
+            <button class="nav-button" onclick="showPage('ai-page')">Introduction to AI in Business</button>
+            <!-- NEW NAVIGATION BUTTON FOR GENAI -->
+            <button class="nav-button" onclick="showPage('genai-page')">Generative AI</button>
+        </div>
+    </div>
+
+    <div id="mba-page" class="page">
+        
+        <!-- Background Video Element MOVED to MBA page -->
+        <video autoplay loop muted playsinline id="background-video">
+            <!-- NOTE: External video sources (like mp4 or webm links) are typically blocked in this environment for security. 
+            A functional video path would go here, e.g., <source src="https://example.com/corporate_loop.mp4" type="video/mp4"> 
+            Please replace this comment with your own working source URL to see the video play. -->
+        </video>
+        
+        <div class="mba-content-area">
+
+            <!-- Reset Button: Now INSIDE the frame and positioned absolutely relative to it -->
+            <div id="reset-button-mba" class="reset-button" onclick="hideAllMBA()" title="Hide All Content">
+                👁️
+            </div>
+
+            <div id="m-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('m')">M</div>
+                <div class="content-wrapper">
+                    <div id="m-word" class="reveal-word" onclick="toggleDefinition('m')">
+                        Master
+                        <span class="icon" style="color: #ffc107;">🏆</span>
+                    </div>
+                    <div id="m-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🗣️</span> "I have great skill at doing something!" 
+                        </p>
+                        <p>
+                            Person who has great skill at doing something. (Represents the high level of expertise gained.)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="b-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('b')">B</div>
+                <div class="content-wrapper">
+                    <div id="b-word" class="reveal-word" onclick="toggleDefinition('b')">
+                        Business
+                        <span class="icon" style="color: #007bff;">🤝</span>
+                    </div>
+                    <div id="b-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🔄</span> Org, stakeholder, people focused on goods or services to customer with primary goal of earning profit
+                        </p>
+                        <p>
+                            Organization, stakeholders, and people focused on goods or services to a customer with the primary goal of earning profit.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="a-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('a')">A</div>
+                <div class="content-wrapper">
+                    <div id="a-word" class="reveal-word" onclick="toggleDefinition('a')">
+                        Administration
+                        <span class="icon" style="color: #28a745;">📋</span>
+                    </div>
+                    <div id="a-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🧭</span> Control, Act of managing
+                        </p>
+                        <p>
+                            Control, Act of managing. (The oversight and strategic direction.)
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- AI PAGE (Rule-Based Systems) -->
+    <div id="ai-page" class="page">
+        
+        <!-- Background Video Element reused -->
+        <video autoplay loop muted playsinline id="background-video">
+            <!-- NOTE: External video sources (like mp4 or webm links) are typically blocked in this environment for security. 
+            A functional video path would go here, e.g., <source src="https://example.com/corporate_loop.mp4" type="video/mp4"> 
+            Please replace this comment with your own working source URL to see the video play. -->
+        </video>
+        
+        <div class="mba-content-area">
+
+            <!-- Reset Button for AI Page -->
+            <div id="reset-button-ai" class="reset-button" onclick="hideAllAI()" title="Hide All Content">
+                👁️
+            </div>
+            
+            <h2 style="color: #6f42c1; margin-bottom: 25px; border-bottom: 3px solid #6f42c1; padding-bottom: 5px;">Rule-Based Systems: The Precursor to AI</h2>
+
+            <!-- Section 1: Rule Based Concept -->
+            <div id="rb1-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('rb1')">R</div>
+                <div class="content-wrapper">
+                    <div id="rb1-word" class="reveal-word" onclick="toggleDefinition('rb1')" style="color: #6f42c1;">
+                        Rule-Based Execution
+                        <span class="icon" style="color: #6f42c1;">⚙️</span>
+                    </div>
+                    <div id="rb1-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">📜</span> Program-Based System
+                        </p>
+                        <p>
+                            This is the <strong>earlier system</strong> which is all about <strong>program-based execution</strong>. It is explicitly designed to solve problems based on a predetermined set of instructions.
+                        </p>
+                        <p style="font-weight: bold; color: #dc3545; margin-top: 10px;">
+                            ❌ Weakness: Lacks adaptability.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Example (Chess) -->
+            <div id="rb2-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('rb2')">E</div>
+                <div class="content-wrapper">
+                    <div id="rb2-word" class="reveal-word" onclick="toggleDefinition('rb2')" style="color: #dc3545;">
+                        Example: Chess Logic
+                        <span class="icon" style="color: #dc3545;">♟️</span>
+                    </div>
+                    <div id="rb2-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🛡️</span> Defined Response
+                        </p>
+                        <p>
+                            In a game of Chess against a computer, the system is hard-coded to follow a specific <strong>rule</strong>: if the King is in Check, the system <strong>must</strong> move the King to a safe position.
+                        </p>
+                        <p style="font-weight: bold; color: #dc3545; margin-top: 10px;">
+                            ❌ Weakness: Lacks the ability to process large volumes of unstructured data.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 3: Strength and Final Weakness -->
+            <div id="rb3-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('rb3')">S</div>
+                <div class="content-wrapper">
+                    <div id="rb3-word" class="reveal-word" onclick="toggleDefinition('rb3')" style="color: #17a2b8;">
+                        Clarity of Logic
+                        <span class="icon" style="color: #17a2b8;">✅</span>
+                    </div>
+                    <div id="rb3-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">📝</span> Easy to Understand
+                        </p>
+                        <p>
+                            Rule-based programming is <strong>easy to understand</strong> because you can define and clearly trace exactly how the system decides its outcome.
+                        </p>
+                        <p style="font-weight: bold; color: #dc3545; margin-top: 10px;">
+                            ❌ Final Weakness: Lacks the ability to learn from errors.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <!-- END AI PAGE -->
+    
+    <!-- NEW GENAI PAGE -->
+    <div id="genai-page" class="page">
+        
+        <!-- Background Video Element reused -->
+        <video autoplay loop muted playsinline id="background-video">
+            <!-- NOTE: External video sources (like mp4 or webm links) are typically blocked in this environment for security. 
+            A functional video path would go here, e.g., <source src="https://example.com/corporate_loop.mp4" type="video/mp4"> 
+            Please replace this comment with your own working source URL to see the video play. -->
+        </video>
+        
+        <div class="mba-content-area">
+
+            <!-- Reset Button for GenAI Page -->
+            <div id="reset-button-genai" class="reset-button" onclick="hideAllGenAI()" title="Hide All Content">
+                👁️
+            </div>
+            
+            <h2 style="color: #f06292; margin-bottom: 25px; border-bottom: 3px solid #f06292; padding-bottom: 5px;">Generative AI: The Creative Machine</h2>
+
+            <!-- Section 1: Core Concept - Generate -->
+            <div id="g1-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('g1')">G</div>
+                <div class="content-wrapper">
+                    <div id="g1-word" class="reveal-word" onclick="toggleDefinition('g1')" style="color: #ff8a80;">
+                        Generate
+                        <span class="icon" style="color: #ff8a80;">✨</span>
+                    </div>
+                    <div id="g1-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">🎨</span> Create Something New
+                        </p>
+                        <p>
+                            <strong>Generative AI</strong> is a type of computer program that can create new things—like stories, images, music, or computer code—that have never existed before. Think of it as a creative brain.
+                        </p>
+                        <p style="font-weight: bold; color: #28a745; margin-top: 10px;">
+                            ✅ Strength: Produces unique, diverse, and creative outputs.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Examples - What it Creates -->
+            <div id="g2-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('g2')">E</div>
+                <div class="content-wrapper">
+                    <div id="g2-word" class="reveal-word" onclick="toggleDefinition('g2')" style="color: #f06292;">
+                        Examples
+                        <span class="icon" style="color: #f06292;">📝</span>
+                    </div>
+                    <div id="g2-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">💬</span> Creative Tasks
+                        </p>
+                        <p>
+                            If you ask it, "Write me an email to a client," it writes it. If you ask it to "Draw a picture of a dog wearing a tie," it draws it. It makes things based on simple text prompts (your instructions).
+                        </p>
+                        <p style="font-weight: bold; color: #28a745; margin-top: 10px;">
+                            ✅ Strength: Handles complex language and creative requests easily.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 3: How it Works - Pattern Learning -->
+            <div id="g3-section" class="mba-section">
+                <div class="mba-letter" onclick="toggleWord('g3')">L</div>
+                <div class="content-wrapper">
+                    <div id="g3-word" class="reveal-word" onclick="toggleDefinition('g3')" style="color: #ffeb3b; color: #8d6e63;">
+                        Learns Patterns
+                        <span class="icon" style="color: #ffeb3b; color: #8d6e63;">🧠</span>
+                    </div>
+                    <div id="g3-definition" class="reveal-definition">
+                        <p class="visual-metaphor">
+                            <span style="font-size: 1.2em;">📈</span> Trained on Data
+                        </p>
+                        <p>
+                            Unlike the Rule-Based system (which only follows `if X, then Y`), GenAI learns by looking at billions of examples. It doesn't learn rules, it learns <strong>patterns</strong>, like proper grammar, realistic drawing styles, or musical harmony, to create believable and new outputs.
+                        </p>
+                        <p style="font-weight: bold; color: #28a745; margin-top: 10px;">
+                            ✅ Strength: Highly adaptable and gets better with more data.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <!-- END GENAI PAGE -->
+
+    <script>
+        // Function to show the correct page on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialPage = window.location.hash ? window.location.hash.substring(1) : 'home-page';
+            showPage(initialPage);
+        });
+
+        // Function to switch between pages
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // Display the target page
+            document.getElementById(pageId).style.display = 'flex'; 
+            window.location.hash = pageId;
+        }
+
+        // Function to toggle the Word (Step 1: Letter Click)
+        // This function now only reveals the word and keeps it visible.
+        function toggleWord(id) {
+            // Get the prefix (m, b, a, rb1, rb2, rb3, g1, g2, g3)
+            const prefix = id.match(/^(m|b|a|rb\d|g\d)/)[0]; 
+
+            // Define all possible IDs across all pages
+            const allIds = ['m', 'b', 'a', 'rb1', 'rb2', 'rb3', 'g1', 'g2', 'g3'];
+            
+            // Hide all other sections and definitions first
+            allIds.forEach(otherId => {
+                const otherWord = document.getElementById(otherId + '-word');
+                const otherDef = document.getElementById(otherId + '-definition');
+                if (otherId !== id && otherWord) {
+                    otherWord.style.display = 'none';
+                    otherDef.style.display = 'none';
+                }
+            });
+
+            // Toggle the current word
+            const wordElement = document.getElementById(id + '-word');
+            const definitionElement = document.getElementById(id + '-definition');
+            
+            if (wordElement.style.display === 'flex') {
+                wordElement.style.display = 'none';
+                definitionElement.style.display = 'none'; // Ensure definition is also hidden
+            } else {
+                wordElement.style.display = 'flex';
+                definitionElement.style.display = 'none'; // Start with only the word visible
+            }
+        }
+
+        // Function to toggle the Definition (Step 2: Icon Click)
+        function toggleDefinition(id) {
+            const definitionElement = document.getElementById(id + '-definition');
+            // Toggle the display of the definition
+            definitionElement.style.display = (definitionElement.style.display === 'block' ? 'none' : 'block');
+        }
+
+        // Function for MBA page reset
+        function hideAllMBA() {
+            // Iterate over all three MBA sections and hide both the word and the definition
+            ['m', 'b', 'a'].forEach(id => {
+                const wordElement = document.getElementById(id + '-word');
+                const definitionElement = document.getElementById(id + '-definition');
+                if (wordElement) wordElement.style.display = 'none';
+                if (definitionElement) definitionElement.style.display = 'none';
+            });
+        }
+
+        // Function to hide all revealed content on the AI page
+        function hideAllAI() {
+            // Iterate over all three AI sections and hide both the word and the definition
+            ['rb1', 'rb2', 'rb3'].forEach(id => {
+                const wordElement = document.getElementById(id + '-word');
+                const definitionElement = document.getElementById(id + '-definition');
+                if (wordElement) wordElement.style.display = 'none';
+                if (definitionElement) definitionElement.style.display = 'none';
+            });
+        }
+        
+        // NEW Function to hide all revealed content on the GenAI page
+        function hideAllGenAI() {
+            // Iterate over all three GenAI sections and hide both the word and the definition
+            ['g1', 'g2', 'g3'].forEach(id => {
+                const wordElement = document.getElementById(id + '-word');
+                const definitionElement = document.getElementById(id + '-definition');
+                if (wordElement) wordElement.style.display = 'none';
+                if (definitionElement) definitionElement.style.display = 'none';
+            });
+        }
+
+        // Update the MBA reset button to use the new function name
+        document.getElementById('reset-button-mba').onclick = hideAllMBA;
+    </script>
+
+</body>
+</html>
